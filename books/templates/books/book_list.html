@@ -1,0 +1,45 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row flex-row-reverse justify-content-md-center">
+        <center>
+            <form action="">
+                {{ search_book }}
+                <input type="submit" value="{% trans 'search book' %}">
+            </form>
+        </center>
+            {% for book in books %}
+                <div class="card m-2" style="max-width: 45%">
+                    <div class="row g-0 h-100" dir="rtl">
+                        <div class="col-md-4">
+                            {% if book.image %}
+                                <a href="{{ book.get_absolute_url }}">
+                                <img src="{{ book.image.url }}"
+                                     class="img-fluid rounded-start" alt="...">
+                                </a>
+                            {% else %}
+                                {% static 'img/No-Image.jpg' %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8 h-100">
+                            <div class="d-flex flex-column justify-content-between h-100">
+                                <div class="card-body">
+                                    <a href="{{ book.get_absolute_url }}">
+                                        <h3 class="card-title"><strong>{{ book.title }}</strong></h3>
+                                    </a>
+                                    <p class="card-text pt-3">
+                                        {{ book.text|truncatewords:10 }}
+                                    </p>
+                                    <p class="text-muted">:{% trans 'author' %} {{ book.author }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

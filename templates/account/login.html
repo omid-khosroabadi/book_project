@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+{% load i18n %}
+{% block content %}
+    <center>
+        <h1 style="color: #006b1b">{% trans 'login page' %}</h1>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="{% trans 'login' %}">
+        </form>
+        <a style="color: #e0a800" href="{% url 'account_reset_password' %}">{% trans 'forget password' %}</a>
+    </center>
+{% endblock %}

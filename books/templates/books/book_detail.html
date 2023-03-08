@@ -1,0 +1,99 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load humanize %}
+{% load i18n %}
+{% block content %}
+    <div class="container mt-5" dir="rtl">
+        <div class="">
+            <div class="">
+                <div class="d-flex justify-content-center">
+                    <div class="row w-sm-75 w-100">
+                        <div class="col-xs-12 col-md-3 d-flex justify-content-center">
+                            <div>
+                                {% if book.image %}
+                                    <img src="{{ book.image.url }}"
+                                         class="img-fluid rounded-start" alt="...">
+                                {% else %}
+                                    {% static 'img/No-Image.jpg' %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-center text-md-end mt-md-1 mt-4">
+                            <h1>{{ book.title }}</h1>
+                            <h5 class="small my-1"><span class="text-muted">نویسنده: </span>{{ book.author }}</h5>
+                                <a href="{% url 'book_delete' book.id %}"
+                                   class="btn btn-danger mt-3">
+                                    {% trans 'delete' %} {{ book.title }}
+                                </a>
+                                <a href="{% url 'book_update' book.id %}"
+                                   class="btn btn-warning mt-3">
+                                    {% trans 'edit' %} {{ book.title }}
+                                </a>
+                        </div>
+                        <div class="col-xs-12 col-md-3 d-flex flex-column">
+                            <h3 class="align-self-center pt-2 text-muted align-self-md-end">
+                                {{ book.price|intcomma:False }} {% trans '$' %}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="my-3 p-5 w-sm-75 w-100">
+                        <p>{{ book.text|linebreaks }}</p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="card shadow my-3 p-5 w-sm-75 w-100">
+                        <h2 class="mb-5">نظرات:</h2>
+                        {% for comment in book.comments.all %}
+                            <div class="border-bottom mb-3">
+                                <h5 class="mb-3">{{ comment.author.username }}</h5>
+                                <p>{{ comment.body|linebreaks }}</p>
+                                {% if comment.recommend %}
+                                    <p style="color: #006b1b">{{ comment.author.username|upper }} {% trans 'recommend you 👍' %}</p>
+                                {% else %}
+                                    <p style="color: #a90707">{{ comment.author.username|upper }} {% trans 'not recommend you 👎' %}</p>
+                                {% endif %}
+                                {% if comment.author == user %}
+                                    <a style="color: #a90707"
+                                       href="{% url 'comment_delete' comment.id %}">{% trans 'delete' %}</a>
+                                    <a style="color: #e0a800"
+                                       href="{% url 'comment_update' comment.id %}">{% trans 'edit' %}</a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="card shadow my-3 p-5 w-sm-75 w-100">
+                        <h3>نظر خود را وارد کنید:</h3>
+                        <form action="{% url 'comment_create' book.id %}" method="post">
+                            {% csrf_token %}
+                            {{ comment_form.as_p }}
+                            <input type="submit" value="{% trans 'send comment' %}">
+                        </form>
+                        {#                    <form method="POST">#}
+                        {#                        <div class="form-group py-2">#}
+                        {#                            <label class="py-1" for="author_name">نام شما:</label>#}
+                        {#                            <input type="text" class="form-control" placeholder="علی علوی" name="author_name">#}
+                        {#                        </div>#}
+                        {#                        <div class="form-group py-2">#}
+                        {#                            <label class="py-1" for="email">ایمیل شما:</label>#}
+                        {#                            <input type="email" class="form-control" placeholder="example@gmail.com" name="email">#}
+                        {#                        </div>#}
+                        {#                        <div class="form-group py-2">#}
+                        {#                            <label class="py-1" for="comment_text">متن نظر:</label>#}
+                        {#                            <textarea class="form-control" name="text" rows="3"#}
+                        {#                                      placeholder="نظر خود را اینجا وارد کنید."></textarea>#}
+                        {#                        </div>#}
+                        {#                        <button type="submit" class="btn btn-primary">ارسال</button>#}
+                        {#                    </form>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
